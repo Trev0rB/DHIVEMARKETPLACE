@@ -1,0 +1,22 @@
+{
+  "name": "dhive-backend",
+  "version": "1.0.0",
+  "description": "DHIVE Claude API Backend",
+  "dependencies": {}
+}
+```
+
+**3. Commit**
+- Commit message: `Add package.json`
+- Click **"Commit new file"**
+
+---
+
+## ✅ **Your GitHub repo should now have:**
+```
+dhive-backend/
+├── netlify/
+│   └── functions/
+│       └── claude.js
+├── package.json
+└── README.md
