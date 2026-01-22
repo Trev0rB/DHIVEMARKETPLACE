@@ -1,25 +1,28 @@
-// DHIVE - Claude API Backend Function
-// This keeps your API key secure
-
+// DHIVE - Claude API Backend Function with CORS
 exports.handler = async (event, context) => {
+    // CORS headers
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Content-Type': 'application/json'
+    };
+    
+    // Handle preflight OPTIONS request
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers: headers,
+            body: ''
+        };
+    }
+    
     // Only allow POST requests
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
+            headers: headers,
             body: JSON.stringify({ error: 'Method not allowed' })
-        };
-    }
-    
-    // Handle CORS preflight
-    if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Methods': 'POST, OPTIONS'
-            },
-            body: ''
         };
     }
     
@@ -37,7 +40,7 @@ exports.handler = async (event, context) => {
         const systemPrompt = systemPrompts[category] || 'You are a helpful AI assistant building web tools. Provide complete, working code examples in HTML, CSS, and JavaScript.';
         
         // Prepare messages for Claude API
-        const messages = chatHistory.length > 0 ? chatHistory : [];
+        const messages = chatHistory && chatHistory.length > 0 ? [...chatHistory] : [];
         messages.push({
             role: 'user',
             content: message
@@ -72,10 +75,7 @@ exports.handler = async (event, context) => {
         
         return {
             statusCode: 200,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
+            headers: headers,
             body: JSON.stringify({
                 response: aiResponse
             })
@@ -85,10 +85,7 @@ exports.handler = async (event, context) => {
         console.error('Error:', error);
         return {
             statusCode: 500,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
+            headers: headers,
             body: JSON.stringify({
                 error: 'Failed to process request',
                 details: error.message
@@ -96,3 +93,34 @@ exports.handler = async (event, context) => {
         };
     }
 };
+```
+
+### **5. Commit changes**
+- Scroll down
+- Commit message: `Fix CORS headers`
+- Click **"Commit changes"**
+
+---
+
+## 🔄 **Wait for Auto-Deploy**
+
+**1. Go back to Netlify**
+- https://app.netlify.com
+
+**2. Wait 30-60 seconds**
+- New deployment will start automatically
+- Wait for "Site is live" ✅
+
+---
+
+## 🧪 **TEST AGAIN**
+
+**1. Go back to your .webflow.io site**
+
+**2. Hard refresh** (Ctrl+Shift+R or Cmd+Shift+R)
+
+**3. Go to Build AI Tool → Sign in → Select category**
+
+**4. Send a message:**
+```
+Create a simple todo list
